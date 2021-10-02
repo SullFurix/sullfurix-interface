@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
-import { useEthers } from "@usedapp/core";
 import Jazzicon from "@metamask/jazzicon";
 import styled from "@emotion/styled";
+import { useLocalStorage } from "./../utils/utils";
 
 const StyledIdenticon = styled.div`
   height: 1rem;
@@ -12,14 +12,15 @@ const StyledIdenticon = styled.div`
 
 export default function Identicon() {
   const ref = useRef<HTMLDivElement>();
-  const { account } = useEthers();
+
+  const [address] = useLocalStorage("address");
 
   useEffect(() => {
-    if (account && ref.current) {
+    if (address && ref.current) {
       ref.current.innerHTML = "";
-      ref.current.appendChild(Jazzicon(16, parseInt(account.slice(2, 10), 16)));
+      ref.current.appendChild(Jazzicon(16, parseInt(address.slice(2, 10), 16)));
     }
-  }, [account]);
+  }, [address]);
 
   return <StyledIdenticon ref={ref as any} />;
 }

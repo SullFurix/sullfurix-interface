@@ -11,10 +11,9 @@ import {
   ModalBody,
   ModalCloseButton,
   Text,
-  List,
 } from "@chakra-ui/react";
 import { ExternalLinkIcon, CopyIcon } from "@chakra-ui/icons";
-import { useEthers, useTransactions } from "@usedapp/core";
+import { useLocalStorage } from "./../utils/utils";
 import Identicon from "./Identicon";
 
 type Props = {
@@ -23,17 +22,17 @@ type Props = {
 };
 
 export default function AccountModal({ isOpen, onClose }: Props) {
-  const { account, deactivate } = useEthers();
-  const { transactions } = useTransactions();
-
+  const [address, setAddress] = useLocalStorage("address");
+  const [setValideAddress] = useLocalStorage("valideAddress");
 
   function handleDeactivateAccount() {
-    deactivate();
+    setAddress("");
+    setValideAddress(false);
     onClose();
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered size="md">
+    <Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">
       <ModalOverlay />
       <ModalContent
         background="gray.900"
@@ -69,7 +68,7 @@ export default function AccountModal({ isOpen, onClose }: Props) {
               </Text>
               <Button
                 variant="outline"
-                size="sm"
+                size="lg"
                 borderColor="blue.800"
                 borderRadius="3xl"
                 color="blue.500"
@@ -84,7 +83,7 @@ export default function AccountModal({ isOpen, onClose }: Props) {
                 }}
                 onClick={handleDeactivateAccount}
               >
-                Change
+                Disconnect
               </Button>
             </Flex>
             <Flex alignItems="center" mt={2} mb={4} lineHeight={1}>
@@ -96,10 +95,10 @@ export default function AccountModal({ isOpen, onClose }: Props) {
                 ml="2"
                 lineHeight="1.1"
               >
-                {account &&
-                  `${account.slice(0, 6)}...${account.slice(
-                    account.length - 4,
-                    account.length
+                {address &&
+                  `${address.slice(0, 6)}...${address.slice(
+                    address.length - 4,
+                    address.length
                   )}`}
               </Text>
             </Flex>
@@ -121,7 +120,7 @@ export default function AccountModal({ isOpen, onClose }: Props) {
                 fontSize="sm"
                 display="flex"
                 alignItems="center"
-                href={`https://ropsten.etherscan.io/address/${account}`}
+                href={`https://polygonscan.com/address/${address}`}
                 isExternal
                 color="gray.400"
                 ml={6}
@@ -150,14 +149,14 @@ export default function AccountModal({ isOpen, onClose }: Props) {
             fontWeight="medium"
             fontSize="md"
           >
-          {transactions.map((transaction) => (
+            {/*transactions.map((transaction) => (
             <List
               transaction={transaction.transaction}
               title={transaction.transactionName}
               key={transaction.transaction.hash}
               date={transaction.submittedAt}
             />
-          ))}
+          ))*/}
             Your transactions willl appear here...
           </Text>
         </ModalFooter>
