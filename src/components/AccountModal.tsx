@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import {
   Box,
   Button,
@@ -23,13 +24,22 @@ type Props = {
 
 export default function AccountModal({ isOpen, onClose }: Props) {
   const [address, setAddress] = useLocalStorage("address");
-  const [setValideAddress] = useLocalStorage("valideAddress");
+  const [valideAddress, setValideAddress] = useLocalStorage("valideAddress");
 
   function handleDeactivateAccount() {
     setAddress("");
     setValideAddress(false);
     onClose();
   }
+
+  useEffect(() => {
+    async function anyNameFunction() {
+      if(address === ""){
+        setValideAddress(false);
+      }
+    }
+    anyNameFunction();
+  }, [address]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">

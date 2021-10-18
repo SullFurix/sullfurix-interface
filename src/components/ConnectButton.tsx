@@ -38,11 +38,20 @@ type Props = {
 export default function ConnectButton({ handleOpenModal }: Props) {
   const [address, setAddress] = useLocalStorage("address");
 
-  const [valideAddress, setValideAddress] = useLocalStorage("valideAddress");
+  const [valideAddress, setValideAddress] = useLocalStorage("valideAddress", false);
 
-  const [currency, setCurrency] = useLocalStorage("currency");
+  const [currency, setCurrency] = useLocalStorage("currency", "USD");
 
   const [sfxBalance, setSfxBalance] = useState<any | number>(0);
+
+  const [sfxPrice, setSfxPrice] = useState<any | number>(1);
+
+  const [sfxPriceByCurrency, setSfxPriceByCurrency] = useState<any | number>(1);
+
+  const [leftCurrency, setLeftCurrency] = useState("$");
+
+  const [rightCurrency, setRightCurrency] = useState("");
+
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -104,10 +113,39 @@ export default function ConnectButton({ handleOpenModal }: Props) {
       setSfxBalance(
         parseFloat(fromWeiWithDecimals(web3, balance, 18)).toFixed(0)
       );
-      setValideAddress(true);
+
+      setValideAddress("true");
     }
     anyNameFunction();
   }, [address]);
+
+  useEffect(() => {
+      let rate = 1;
+
+      if(currency === "EUR"){
+        setLeftCurrency("");
+        setRightCurrency("â‚¬");
+        rate = 0.86;
+        setSfxPriceByCurrency(sfxPrice * rate);
+      } else if (currency === "USD"){
+        setLeftCurrency("$");
+        setRightCurrency("");
+        rate = 1;
+        setSfxPriceByCurrency(sfxPrice * rate);
+      }
+  }, [currency, sfxPrice]);
+
+
+  function getRandomArbitrary(min :any, max: any) {
+    return Math.random() * (max - min) + min;
+  }
+
+  useEffect(() => {
+    setTimeout(() => {
+      setSfxPrice(sfxPrice+getRandomArbitrary(-0.001,0.001));
+    }, getRandomArbitrary(100, 1500));
+  }, [sfxPrice]);
+
 
   return valideAddress ? (
     <>
@@ -130,8 +168,8 @@ export default function ConnectButton({ handleOpenModal }: Props) {
             setCurrency(selectCurrency.target.value.toString());
           }}
         >
-          <option value="$">Dollar ($)</option>
-          <option value="€">Euro (€)</option>
+          <option value="USD">Dollar ($)</option>
+          <option value="EUR">Euro (â‚¬)</option>
         </Select>
         <Button
           onClick={handleOpenModal}
@@ -170,11 +208,11 @@ export default function ConnectButton({ handleOpenModal }: Props) {
             <Badge>{sfxBalance}</Badge> SullFurix (SFX)
           </StatLabel>
           <StatNumber>
-            ≈ {sfxBalance} {currency}
+            {leftCurrency} {(sfxBalance * sfxPriceByCurrency).toFixed(4)} {rightCurrency}
           </StatNumber>
           <StatHelpText>
             <StatArrow type="increase" />
-            0.01%
+              {(((sfxPrice-0.9)/0.9)*100).toFixed(2)} %
           </StatHelpText>
         </Stat>
       </Text>
