@@ -28,14 +28,13 @@ export default function AccountModal({ isOpen, onClose }: Props) {
 
   function handleDeactivateAccount() {
     setAddress("");
-    setValideAddress(false);
     onClose();
   }
 
   useEffect(() => {
     async function anyNameFunction() {
       if(address === ""){
-        setValideAddress(false);
+        setValideAddress(!valideAddress);
       }
     }
     anyNameFunction();

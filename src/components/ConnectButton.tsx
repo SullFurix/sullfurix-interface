@@ -38,7 +38,10 @@ type Props = {
 export default function ConnectButton({ handleOpenModal }: Props) {
   const [address, setAddress] = useLocalStorage("address");
 
-  const [valideAddress, setValideAddress] = useLocalStorage("valideAddress", false);
+  const [valideAddress, setValideAddress] = useLocalStorage(
+    "valideAddress",
+    false
+  );
 
   const [currency, setCurrency] = useLocalStorage("currency", "USD");
 
@@ -51,7 +54,6 @@ export default function ConnectButton({ handleOpenModal }: Props) {
   const [leftCurrency, setLeftCurrency] = useState("$");
 
   const [rightCurrency, setRightCurrency] = useState("");
-
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -114,38 +116,36 @@ export default function ConnectButton({ handleOpenModal }: Props) {
         parseFloat(fromWeiWithDecimals(web3, balance, 18)).toFixed(0)
       );
 
-      setValideAddress("true");
+      setValideAddress(true);
     }
     anyNameFunction();
   }, [address]);
 
   useEffect(() => {
-      let rate = 1;
+    let rate = 1;
 
-      if(currency === "EUR"){
-        setLeftCurrency("");
-        setRightCurrency("â‚¬");
-        rate = 0.86;
-        setSfxPriceByCurrency(sfxPrice * rate);
-      } else if (currency === "USD"){
-        setLeftCurrency("$");
-        setRightCurrency("");
-        rate = 1;
-        setSfxPriceByCurrency(sfxPrice * rate);
-      }
+    if (currency === "EUR") {
+      setLeftCurrency("");
+      setRightCurrency("€");
+      rate = 0.86;
+      setSfxPriceByCurrency(sfxPrice * rate);
+    } else if (currency === "USD") {
+      setLeftCurrency("$");
+      setRightCurrency("");
+      rate = 1;
+      setSfxPriceByCurrency(sfxPrice * rate);
+    }
   }, [currency, sfxPrice]);
 
-
-  function getRandomArbitrary(min :any, max: any) {
+  function getRandomArbitrary(min: any, max: any) {
     return Math.random() * (max - min) + min;
   }
 
   useEffect(() => {
     setTimeout(() => {
-      setSfxPrice(sfxPrice+getRandomArbitrary(-0.001,0.001));
+      setSfxPrice(sfxPrice + getRandomArbitrary(-0.001, 0.001));
     }, getRandomArbitrary(100, 1500));
   }, [sfxPrice]);
-
 
   return valideAddress ? (
     <>
@@ -169,7 +169,7 @@ export default function ConnectButton({ handleOpenModal }: Props) {
           }}
         >
           <option value="USD">Dollar ($)</option>
-          <option value="EUR">Euro (â‚¬)</option>
+          <option value="EUR">Euro (€)</option>
         </Select>
         <Button
           onClick={handleOpenModal}
@@ -208,11 +208,12 @@ export default function ConnectButton({ handleOpenModal }: Props) {
             <Badge>{sfxBalance}</Badge> SullFurix (SFX)
           </StatLabel>
           <StatNumber>
-            {leftCurrency} {(sfxBalance * sfxPriceByCurrency).toFixed(4)} {rightCurrency}
+            {leftCurrency} {(sfxBalance * sfxPriceByCurrency).toFixed(4)}{" "}
+            {rightCurrency}
           </StatNumber>
           <StatHelpText>
             <StatArrow type="increase" />
-              {(((sfxPrice-0.9)/0.9)*100).toFixed(2)} %
+            {(((sfxPrice - 0.9) / 0.9) * 100).toFixed(2)} %
           </StatHelpText>
         </Stat>
       </Text>

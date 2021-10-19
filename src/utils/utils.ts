@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 
-export function useLocalStorage(key: string, defaultState?: string) {
+export function useLocalStorage(key: string, defaultState?: any) {
   const [state, setState] = useState(() => {
     // NOTE: Not sure if this is ok
     const storedState = localStorage.getItem(key);
