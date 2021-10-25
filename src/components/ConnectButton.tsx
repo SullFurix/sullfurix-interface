@@ -47,7 +47,7 @@ export default function ConnectButton({ handleOpenModal }: Props) {
 
   const [sfxBalance, setSfxBalance] = useState<any | number>(0);
 
-  const [sfxPrice, setSfxPrice] = useState<any | number>(1);
+  const [sfxPrice, setSfxPrice] = useState<any | number>(1.01);
 
   const [sfxPriceByCurrency, setSfxPriceByCurrency] = useState<any | number>(1);
 
